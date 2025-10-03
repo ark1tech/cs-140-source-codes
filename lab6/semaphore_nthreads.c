@@ -57,19 +57,6 @@ void f(void *id)
   printf("\nthread %d arrived at barrier\n", *((int *)id));
   wait_barrier(&b, NTHREADS);
   printf("thread %d exited barrier\n", *((int *)id));
-
-  // add delay so extra threads arrive after first batch exits
-  sleep(1);
-}
-
-void extra_f(void *id)
-{
-  for (int i = 0; i < 100000; i++)
-  {
-  }
-  printf("\n*** EXTRA thread %d trying to use barrier ***\n", *((int *)id));
-  wait_barrier(&b, NTHREADS);
-  printf("*** EXTRA thread %d exited barrier ***\n", *((int *)id));
 }
 
 int main()
@@ -78,23 +65,15 @@ int main()
   int ids[NTHREADS + EXTRA_THREADS];
 
   printf("initializing barrier for N=%d threads\n", NTHREADS);
+  printf("creating %d threads total (N + %d extra)\n", NTHREADS + EXTRA_THREADS, EXTRA_THREADS);
   printf("initial: count=0, mutex=1, barrier=0\n\n");
   init_barrier(&b);
 
-  // create N threads
-  for (int i = 0; i < NTHREADS; i++)
+  // create all threads at the same time (N + extra)
+  for (int i = 0; i < NTHREADS + EXTRA_THREADS; i++)
   {
     ids[i] = i;
     pthread_create(&thread[i], NULL, (void *)f, &ids[i]);
-  }
-
-  // wait a bit then create extra threads
-  sleep(1);
-  printf("\n*** creating %d EXTRA threads (total > N) ===\n", EXTRA_THREADS);
-  for (int i = NTHREADS; i < NTHREADS + EXTRA_THREADS; i++)
-  {
-    ids[i] = i;
-    pthread_create(&thread[i], NULL, (void *)extra_f, &ids[i]);
   }
 
   for (int i = 0; i < NTHREADS + EXTRA_THREADS; i++)
@@ -102,6 +81,7 @@ int main()
     pthread_join(thread[i], NULL);
   }
 
-  printf("\nall threads completed successfully\n");
-  printf("barrier ensured only N threads pass at a time\n");
+  printf("\nall %d threads completed\n", NTHREADS + EXTRA_THREADS);
+  printf("first N=%d threads passed through barrier together\n", NTHREADS);
+  printf("remaining %d threads waited and formed new barrier cycle\n", EXTRA_THREADS);
 }

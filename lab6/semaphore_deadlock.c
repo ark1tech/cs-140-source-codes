@@ -77,24 +77,24 @@ int main()
     pthread_create(&thread[i], NULL, (void *)f, &ids[i]);
   }
 
-  printf("\nwaiting 3 seconds for threads to complete...\n");
-  sleep(3);
+  // printf("\nwaiting 3 seconds for threads to complete...\n");
+  // sleep(3);
 
-  printf("\ndeadlock scenario! \n");
-  printf("expected: all %d threads should exit\n", NTHREADS);
-  printf("actual: only 1 thread exits, others deadlock at sem_wait\n\n");
+  // printf("\ndeadlock scenario! \n");
+  // printf("expected: all %d threads should exit\n", NTHREADS);
+  // printf("actual: only 1 thread exits, others deadlock at sem_wait\n\n");
 
-  printf("explanation:\n");
-  printf("- thread 0,1,2 arrive, count becomes 3\n");
-  printf("- thread 2 (last) does sem_post, barrier value: 0 -> 1\n");
-  printf("- thread 0 does sem_wait first, barrier: 1 -> 0, thread 0 exits\n");
-  printf("- WITHOUT line (A), thread 0 doesn't do sem_post\n");
-  printf("- barrier stays at 0\n");
-  printf("- threads 1,2 wait forever at sem_wait (barrier=0)\n");
-  printf("- DEADLOCK: threads 1,2 never wake up\n\n");
+  // printf("explanation:\n");
+  // printf("- thread 0,1,2 arrive, count becomes 3\n");
+  // printf("- thread 2 (last) does sem_post, barrier value: 0 -> 1\n");
+  // printf("- thread 0 does sem_wait first, barrier: 1 -> 0, thread 0 exits\n");
+  // printf("- WITHOUT line (A), thread 0 doesn't do sem_post\n");
+  // printf("- barrier stays at 0\n");
+  // printf("- threads 1,2 wait forever at sem_wait (barrier=0)\n");
+  // printf("- DEADLOCK: threads 1,2 never wake up\n\n");
 
-  printf("the sem_post at (A) is needed so each exiting thread\n");
-  printf("posts to wake the next thread in a chain reaction\n");
+  // printf("the sem_post at (A) is needed so each exiting thread\n");
+  // printf("posts to wake the next thread in a chain reaction\n");
 
   // note: threads will hang, program won't exit cleanly
   // this demonstrates the deadlock
@@ -104,5 +104,5 @@ int main()
     pthread_join(thread[i], NULL);
   }
 
-  printf("\nif you see this, all threads completed (shouldn't happen with deadlock)\n");
+  printf("\n no deadlock happened \n");
 }
