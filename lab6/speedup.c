@@ -6,6 +6,8 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define NUMS 100000000
 #define NTHREADS 1
+// mod
+// #define NTHREADS 2
 #define NUMS_PER_THREAD (NUMS / NTHREADS)
 
 struct thread_data
